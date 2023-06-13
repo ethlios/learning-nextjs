@@ -12,6 +12,10 @@ const ConfigRoutesPage: ConfigRoutes[] = [
         name: 'Account',
         path: '/account',
     },
+    {
+        name: 'posts',
+        path: '/posts/id?page=1',
+    },
 ];
 
 export default ConfigRoutesPage;

@@ -1,28 +1,52 @@
 'use client';
-import React, { useEffect } from 'react';
-import { useParams, useRouter, usePathname, useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams, notFound } from 'next/navigation';
+import React, { FunctionComponent, useEffect, useState } from 'react';
+export interface CreatePageProps {}
 
-export interface CreatePageProps {
-    params: { slug: string };
-}
+interface PostPageIDProps {}
 
-export default function PostPageID(props: CreatePageProps) {
-    const router = useRouter();
-    const params = useParams();
-    const pathnames = usePathname();
-    const searchParams = useSearchParams();
-    const search = searchParams.get('q');
+const PostPageID: FunctionComponent<PostPageIDProps> = ({}) => {
+    const [postLists, setPostLists] = useState([]);
+    const route = useRouter();
+    const param = useSearchParams();
+    const page = Number(param.get('page'));
+
     useEffect(() => {
-        console.log(router);
-        console.log(params);
-        console.log(pathnames);
-        console.log(searchParams);
-        console.log(search);
-    });
+        if (page > 0 && page < 6) {
+            (async () => {
+                const res = await fetch(
+                    `http://js-post-api.herokuapp.com/api/posts?_page=${page}`,
+                    { next: { revalidate: 60 } },
+                ).then((res) => res.json());
+                setPostLists(res.data);
+                route.push(`/posts/id?page=${page}`);
+            })();
+        } else {
+            return notFound();
+        }
+    }, [page, route]);
+
+    const handleNextPage = (): void => {
+        if (page < 5) {
+            route.push(`/posts/id?page=${page + 1}`);
+        }
+    };
+
     return (
-        <div className="flex justify-center h-full">
-            <h1 className="font-bold">ALl param</h1>
-            <button onClick={() => router.push('/account')}>Click</button>
+        <div className="flex justify-center p-10">
+            <ul className="list-decimal">
+                {postLists.map((post: any) => {
+                    return (
+                        <li key={post.id}>
+                            <h1>{post.title}</h1>
+                            <h3>{post.description}</h3>
+                        </li>
+                    );
+                })}
+            </ul>
+            {postLists.length > 0 && <button onClick={handleNextPage}>Next Page</button>}
         </div>
     );
-}
+};
+
+export default PostPageID;
