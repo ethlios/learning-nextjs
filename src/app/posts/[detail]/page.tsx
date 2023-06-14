@@ -9,7 +9,6 @@ export interface IAppProps {
     searchParams: {
         q: string;
     };
-    detail: string;
 }
 
 async function getDatas(id: string) {
