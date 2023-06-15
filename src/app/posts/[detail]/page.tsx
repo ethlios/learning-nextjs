@@ -12,7 +12,9 @@ export interface IAppProps {
 }
 
 async function getDatas(id: string) {
-    const res = await fetch(`http://js-post-api.herokuapp.com/api/posts?q=${id}`);
+    const res = await fetch(`http://js-post-api.herokuapp.com/api/posts?q=${id}`, {
+        next: { revalidate: 10 },
+    });
     const detail = await res.json();
     return detail;
 }
