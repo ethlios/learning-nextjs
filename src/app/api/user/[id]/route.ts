@@ -8,14 +8,7 @@ export async function GET(request: Request, { params }: { params: { id: number }
     const session = await getSession();
     console.log(session?.user.accessToken);
     if (!accessToken || !verifyJwt(accessToken!)) {
-        return new Response(
-            JSON.stringify({
-                error: 'unauthorized',
-            }),
-            {
-                status: 401,
-            },
-        );
+        return new Response(null, { status: 401 });
     }
 
     const userPosts = await prisma.post.findMany({

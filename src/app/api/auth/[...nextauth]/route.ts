@@ -1,6 +1,5 @@
 import NextAuth from 'next-auth/next';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import { cookies } from 'next/headers';
 
 const handler = NextAuth({
     providers: [
@@ -63,5 +62,4 @@ const handler = NextAuth({
 });
 
 // eslint-disable-next-line import/no-anonymous-default-export
-export default (req: any, res: any) => NextAuth(req, res, handler(req, res));
 export { handler as GET, handler as POST };

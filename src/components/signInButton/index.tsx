@@ -1,11 +1,24 @@
 'use client';
 import { signIn, signOut, useSession } from 'next-auth/react';
-import React from 'react';
+import React, { useEffect } from 'react';
+import axios from 'axios';
 
 const SigninButton = () => {
     const { data: session } = useSession();
 
-    console.log(session);
+    useEffect(() => {
+        const axioClient = axios.create({
+            baseURL: 'http://localhost:3000/',
+        });
+        axioClient.interceptors.request.use(async (config) => {
+            const token = session?.user.accessToken;
+            // Get session from NextAuth
+            if (token) {
+                config.headers.Authorization = `${token}`;
+            }
+            return config;
+        });
+    });
 
     if (session && session.user) {
         return (
