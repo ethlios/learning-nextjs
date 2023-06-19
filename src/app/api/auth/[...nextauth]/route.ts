@@ -1,5 +1,6 @@
 import NextAuth from 'next-auth/next';
 import CredentialsProvider from 'next-auth/providers/credentials';
+import { cookies } from 'next/headers';
 
 const handler = NextAuth({
     providers: [
@@ -11,7 +12,11 @@ const handler = NextAuth({
             // e.g. domain, username, password, 2FA token, etc.
             // You can pass any HTML attribute to the <input> tag through the object.
             credentials: {
-                username: { label: 'Username', type: 'text', placeholder: 'jsmith' },
+                username: {
+                    label: 'Username',
+                    type: 'text',
+                    placeholder: 'ethlios@gmail.com',
+                },
                 password: { label: 'Password', type: 'password' },
             },
             async authorize(credentials, req) {
@@ -30,6 +35,7 @@ const handler = NextAuth({
                 const user = await res.json();
 
                 if (user) {
+                    // res.headers.set('Authorization', `Bearer ${user.accessToken}`);
                     // Any object returned will be saved in `user` property of the JWT
                     return user;
                 } else {
@@ -41,6 +47,21 @@ const handler = NextAuth({
             },
         }),
     ],
+    session: {
+        maxAge: 2592000, //--> Lưu đăng nhập trong vòng 30 ngày
+    },
+    callbacks: {
+        async jwt({ token, user }) {
+            return { ...token, ...user };
+        },
+
+        async session({ session, token }) {
+            session.user = token as any;
+            return session;
+        },
+    },
 });
 
+// eslint-disable-next-line import/no-anonymous-default-export
+export default (req: any, res: any) => NextAuth(req, res, handler(req, res));
 export { handler as GET, handler as POST };

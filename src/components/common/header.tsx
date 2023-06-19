@@ -16,11 +16,14 @@ export function Header({ children }: HeaderProps): JSX.Element {
         <>
             <div className="bg-slate-500 text-zinc-50 flex justify-between p-2">
                 <div>
-                    <Link href="/posts" className="mr-2 font-semibold">
+                    <Link href="/posts" className="font-semibold">
                         Posts
                     </Link>
-                    <Link href="/account" className="semibold">
+                    <Link href="/account" className="mr-2 ml-2 font-semibold">
                         Acount
+                    </Link>
+                    <Link href="/postUser" className="font-semibold">
+                        Post User
                     </Link>
                 </div>
                 <SigninButton />
